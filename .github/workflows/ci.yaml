@@ -1,4 +1,4 @@
-name: Main Branch and Release Testing
+name: Release CI
 
 env:
   PROJECT_NAME: mmw
