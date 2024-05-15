@@ -9,7 +9,7 @@ s3_logs_archive_bucket = ""
 ##### NETWORKING VARIABLES ####
 # If left blank, the infrastructure will try to query the values from the control tower vpc
 vpc_id                       = ""
-vpc_cidr                     = ""
+vpc_cidr                     = "10.26.0.0/18"
 security_group_id            = ""
 public_subnets_az_to_id_map  = {}
 private_subnets_az_to_id_map = {}
@@ -24,13 +24,14 @@ sns_critical_subscriptions_map = {}
 ##### APPLICATION VARIABLES ####
 
 titiler_inputs = {
-  app_name                   = "titiler"
-  domain_alias               = "tiler.staging.modelmywatershed.org"
-  mosaic_titiler_release_tag = "v0.14.0-1.0.4"
-  stac_server_and_titiler_s3_arns = [  ]
-  mosaic_titiler_waf_allowed_url = "https://api.impactobservatory.com/stac-aws/"
-  mosaic_titiler_host_header     = "tiler.staging.modelmywatershed.org"
-  web_acl_id                     = ""
+  app_name                        = "titiler"
+  domain_alias                    = "tiler.staging.modelmywatershed.org"
+  deploy_cloudfront               = true
+  mosaic_titiler_release_tag      = "v0.14.0-1.0.4"
+  stac_server_and_titiler_s3_arns = []
+  mosaic_titiler_waf_allowed_url  = "https://api.impactobservatory.com/stac-aws/"
+  mosaic_titiler_host_header      = "tiler.staging.modelmywatershed.org"
+  web_acl_id                      = ""
   auth_function = {
     cf_function_name             = ""
     cf_function_runtime          = "cloudfront-js-2.0"
@@ -44,8 +45,9 @@ titiler_inputs = {
 }
 
 console_ui_inputs = {
-  app_name     = "console"
-  domain_alias = "console.staging.modelmywatershed.org"
+  app_name          = "console"
+  domain_alias      = "console.staging.modelmywatershed.org"
+  deploy_cloudfront = true
   custom_error_response = [
     {
       error_caching_min_ttl = "10"
@@ -55,8 +57,8 @@ console_ui_inputs = {
     }
   ]
   filmdrop_ui_release     = "v5.3.0"
-  filmdrop_ui_config_file = "./console-ui/config.demo.staging.json"
-  filmdrop_ui_logo_file   = "./console-ui/FilmDropDemoLogo.svg"
+  filmdrop_ui_config_file = "./console-ui/config.staging.json"
+  filmdrop_ui_logo_file   = "./console-ui/logo.png"
   filmdrop_ui_logo        = "bm9uZQo=" # Base64: 'none'
   auth_function = {
     cf_function_name             = ""

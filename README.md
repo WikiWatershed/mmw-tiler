@@ -59,6 +59,7 @@ export FILMDROP_TERRAFORM_RELEASE=v2.22.0
 wget -qO- https://github.com/Element84/filmdrop-aws-tf-modules/archive/refs/tags/${FILMDROP_TERRAFORM_RELEASE}.tar.gz | tar xvz
 mkdir -p modules
 mkdir -p profiles
+cp filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/filmdrop.tf .
 cp filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/providers.tf .
 cp filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/inputs.tf .
 cp -r filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/modules .
@@ -69,7 +70,7 @@ rm -rf filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}
 Then run the Terraform commands
 
 ```shell
-terraform init -backend-config=staging.s3.backend.tf
+terraform init
 terraform validate
 terraform plan -var-file=staging.tfvars -out tfplan
 terraform apply -input=false tfplan
