@@ -1,0 +1,7 @@
+# This file should be used if deploying locally and using S3 as your Terraform state file
+# store. Replace `key` with the path to your state file in S3 and `region` with the AWS
+# region of your S3 Bucket and DynamoDB locks table.
+
+key = "FilmDrop-mmw/local/terraform.tfstate"
+region = "us-west-2"
+
