@@ -1,6 +1,6 @@
 ##### PROJECT VARIABLES ####
 # The following variables are global to the FilmDrop infrastructure stack
-environment            = "staging"
+environment            = "stgng"
 project_name           = "mmw"
 domain_zone            = "Z2N98U70LSHZAA"
 s3_access_log_bucket   = ""
@@ -78,7 +78,6 @@ deploy_log_archive                       = true
 deploy_alarms                            = false
 deploy_stac_server_opensearch_serverless = false
 deploy_stac_server                       = false
-deploy_stac_server_outside_vpc           = false
 deploy_analytics                         = false
 deploy_titiler                           = true
 deploy_console_ui                        = true

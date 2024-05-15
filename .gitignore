@@ -21,3 +21,8 @@ plan.out
 .pytest*
 __pycache__
 modules
+profiles
+*.s3.backend.tf
+tfplan
+inputs.tf
+providers.tf

@@ -25,10 +25,8 @@ jobs:
       - name: Preparing Environment
         id: prep_env
         run: |
-          echo "environment = \"git\"" >> ci.tfvars
-          echo "project_name = \"${PROJECT_NAME}\"" >> ci.tfvars
-          cat ci.tfvars
           echo "Creating terraform backend file ..."
+          echo '' > config.s3.backend.tf
           echo 'terraform {' >> config.s3.backend.tf
           echo '  backend "s3" {' >> config.s3.backend.tf
           echo '    encrypt = true' >> config.s3.backend.tf

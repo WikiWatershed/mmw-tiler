@@ -5,8 +5,6 @@
 - [Deploying](#deploying)
   - [Via GitHub Actions](#via-github-actions)
   - [Manual Deploy](#manual-deploy)
-    - [Terraform Backend Configuration](#terraform-backend-configuration)
-    - [Deploy](#deploy)
 - [Destroy](#destroy)
   - [Via GitHub Actions](#via-github-actions-1)
   - [Manual Deploy](#manual-deploy-1)
@@ -36,26 +34,42 @@ TBD.
 
 ### Manual Deploy
 
-#### Terraform Backend Configuration
-
 By default FilmDrop Terraform deployment is configured to use S3 and DynamoDB as
 its state file store. The GitHub Actions build will create this file as
-`config.s3.backend.tf`. When running locally, you can create this file locally, e.g.:
+`staging.s3.backend.tf`. When running locally, you can create this file:
 
 ```text
-# config.s3.backend.tf
-
-key = "FilmDrop-MyProjectName/local/terraform.tfstate"
-region = "us-west-2"
+terraform {
+  backend "s3" {
+    encrypt        = true
+    bucket         = REPLACE_ME # REPLACE with the bootstrapped bucket name
+    dynamodb_table = "filmdrop-terraform-state-locks"
+    key            = "mmw-username-test.tfstate" # REPLACE username with our own
+    region         = "us-west-2"
+  }
+}
 ```
 
-#### Deploy
+to use S3 as the backend. If this is excluded, the default local backend will be used.
 
-Prior to deployment, ensure that necessary configurations are changed according
-to the documentation.
+Download the filmdrop-aws-tf-modules source:
 
 ```shell
-terraform init -backend-config=config.s3.backend.tf
+export FILMDROP_TERRAFORM_RELEASE=v2.22.0
+wget -qO- https://github.com/Element84/filmdrop-aws-tf-modules/archive/refs/tags/${FILMDROP_TERRAFORM_RELEASE}.tar.gz | tar xvz
+mkdir -p modules
+mkdir -p profiles
+cp filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/providers.tf .
+cp filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/inputs.tf .
+cp -r filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/modules .
+cp -r filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/profiles .
+rm -rf filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}
+```
+
+Then run the Terraform commands
+
+```shell
+terraform init -backend-config=staging.s3.backend.tf
 terraform validate
 terraform plan -var-file=staging.tfvars -out tfplan
 terraform apply -input=false tfplan
