@@ -34,7 +34,7 @@ jobs:
           echo '    encrypt = true' >> config.s3.backend.tf
           echo "    bucket = \"${{ secrets.TF_STATE_BUCKET }}\"" >> config.s3.backend.tf
           echo "    dynamodb_table = \"${{ secrets.TF_STATE_LOCK_TABLE }}\"" >> config.s3.backend.tf
-          echo "    key = \"${PROJECT_NAME}-github-test.tfstate\"" >> config.s3.backend.tf
+          echo "    key = \"${PROJECT_NAME}-${STAGE}.tfstate\"" >> config.s3.backend.tf
           echo "    region = \"${{ secrets.AWS_REGION }}\"" >> config.s3.backend.tf
           echo '  }' >> config.s3.backend.tf
           echo '}' >> config.s3.backend.tf
