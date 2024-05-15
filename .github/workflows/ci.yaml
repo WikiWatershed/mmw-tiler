@@ -3,6 +3,7 @@ name: Main Branch and Release Testing
 env:
   PROJECT_NAME: mmw
   FILMDROP_TERRAFORM_RELEASE: v2.22.0 # keep this up to date!
+  STAGE: stage
   CI: true
 
 on:
