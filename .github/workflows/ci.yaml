@@ -80,7 +80,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: GitHubReleaseApply
 
-      - run: terraform apply -lock=false -input=false test.tfplan
+      - run: terraform apply -lock=false -input=false ${STAGE}.tfplan
 
       - name: Post status to Slack channel
         id: tf_apply_successs
