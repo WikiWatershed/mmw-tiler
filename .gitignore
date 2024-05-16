@@ -1,4 +1,8 @@
 .terraform/
+modules
+profiles
+tfplan
+*.tf
 terraform-visual-report
 plan.json
 saved.plan
@@ -20,10 +24,3 @@ package-lock.json
 plan.out
 .pytest*
 __pycache__
-modules
-profiles
-*.s3.backend.tf
-tfplan
-inputs.tf
-providers.tf
-filmdrop.tf
