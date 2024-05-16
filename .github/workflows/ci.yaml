@@ -1,0 +1,121 @@
+name: Release CI
+
+env:
+  PROJECT_NAME: mmw
+  FILMDROP_TERRAFORM_RELEASE: v2.23.0 # keep this up to date!
+  STAGE: staging
+  CI: true
+
+on:
+  push:
+#    branches: ["main"]
+    tags: ["v*.*.*"]
+
+jobs:
+  deploy:
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Preparing Environment
+        id: prep_env
+        run: |
+          echo "Creating terraform backend file ..."
+          echo '' > config.s3.backend.tf
+          echo 'terraform {' >> config.s3.backend.tf
+          echo '  backend "s3" {' >> config.s3.backend.tf
+          echo '    encrypt = true' >> config.s3.backend.tf
+          echo "    bucket = \"${{ secrets.TF_STATE_BUCKET }}\"" >> config.s3.backend.tf
+          echo "    dynamodb_table = \"${{ secrets.TF_STATE_LOCK_TABLE }}\"" >> config.s3.backend.tf
+          echo "    key = \"${PROJECT_NAME}-${STAGE}.tfstate\"" >> config.s3.backend.tf
+          echo "    region = \"${{ secrets.AWS_REGION }}\"" >> config.s3.backend.tf
+          echo '  }' >> config.s3.backend.tf
+          echo '}' >> config.s3.backend.tf
+          cat config.s3.backend.tf
+          echo "Using FilmDrop Terraform ${FILMDROP_TERRAFORM_RELEASE} release..."
+          wget -q -O filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}.tgz https://github.com/Element84/filmdrop-aws-tf-modules/archive/refs/tags/${FILMDROP_TERRAFORM_RELEASE}.tar.gz
+          tar -xzf filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}.tgz
+          mv filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/* .
+
+      - name: Configure Terraform Init Credentials
+        id: init_creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-session-name: GitHubReleaseInit
+
+      - name: Terraform Init
+        id: tf_init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: tf_validate
+        run: terraform validate
+
+      - name: Configure Terraform Plan Credentials
+        id: plan_creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-session-name: GitHubReleasePlan
+
+      - name: Terraform Plan
+        id: tf_plan
+        run: terraform plan -var-file="${STAGE}.tfvars" -out ${STAGE}.tfplan -lock=false
+
+      - name: Configure Terraform Apply Credentials
+        id: apply_creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE }}
+          role-session-name: GitHubReleaseApply
+
+      - run: terraform apply -lock=false -input=false ${STAGE}.tfplan
+
+      - name: Post status to Slack channel
+        id: tf_apply_successs
+        if: steps.tf_apply.outcome == 'success'
+        continue-on-error: true
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          slack-message: ":badger_dance: ${PROJECT_NAME}-${STAGE}-titiler ${{  github.ref_name }} terraform apply job has succeeded!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+      - name: Post status to Slack channel
+        id: tf_apply_failure
+        if: steps.tf_apply.outcome != 'success'
+        continue-on-error: true
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          slack-message: ":sadpanda: ${PROJECT_NAME}-${STAGE}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+      - uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: "v0.51.1"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install pre-commit
+        run: pip install pre-commit
+      - name: Run pre-commit
+        run: pre-commit run --all-files
