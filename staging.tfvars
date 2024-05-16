@@ -23,19 +23,19 @@ deploy_sample_data_bucket                = false
 
 ##### NETWORKING VARIABLES ####
 # If left blank, the infrastructure will try to query the values from the control tower vpc
-vpc_id                       = ""
-vpc_cidr                     = "10.26.0.0/18"
-security_group_id            = ""
+vpc_id            = ""
+vpc_cidr          = "10.26.0.0/18"
+security_group_id = ""
 public_subnets_az_to_id_map = {
-    "us-west-2a" = "10.26.0.0/22"
-    "us-west-2b" = "10.26.4.0/22"
-    "us-west-2c" = "10.26.8.0/22"
+  "us-west-2a" = "10.26.0.0/22"
+  "us-west-2b" = "10.26.4.0/22"
+  "us-west-2c" = "10.26.8.0/22"
 }
 
 private_subnets_az_to_id_map = {
-    "us-west-2a" = "10.26.12.0/22"
-    "us-west-2b" = "10.26.16.0/22"
-    "us-west-2c" = "10.26.20.0/22"
+  "us-west-2a" = "10.26.12.0/22"
+  "us-west-2b" = "10.26.16.0/22"
+  "us-west-2c" = "10.26.20.0/22"
 }
 
 ##### ALARM VARIABLES ####
@@ -69,10 +69,10 @@ titiler_inputs = {
 }
 
 console_ui_inputs = {
-  app_name          = "console"
-  filmdrop_ui_release     = "v5.4.0"
-  deploy_cloudfront = true
-  domain_alias      = "console.staging.modelmywatershed.org"
+  app_name            = "console"
+  filmdrop_ui_release = "v5.4.0"
+  deploy_cloudfront   = true
+  domain_alias        = "console.staging.modelmywatershed.org"
   custom_error_response = [
     {
       error_caching_min_ttl = "10"
