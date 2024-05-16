@@ -1,6 +1,6 @@
 {
   "APP_NAME": "FilmDrop Console",
-  "PUBLIC_URL": "https://console.staging.modelmywatershed.org",
+  "PUBLIC_URL": "https://console.modelmywatershed.org",
   "LOGO_URL": "./logo.png",
   "LOGO_ALT": "FilmDrop Console Logo",
   "DEFAULT_COLLECTION": "io-10m-annual-lulc",
@@ -15,7 +15,7 @@
       "high": 3
     }
   },
-  "SCENE_TILER_URL": "https://tiler.staging.modelmywatershed.org",
+  "SCENE_TILER_URL": "https://tiler.modelmywatershed.org",
   "SCENE_TILER_PARAMS": {
     "io-10m-annual-lulc": {
       "assets": [
@@ -23,7 +23,7 @@
       ]
     }
   },
-  "MOSAIC_TILER_URL": "https://tiler.staging.modelmywatershed.org",
+  "MOSAIC_TILER_URL": "https://tiler.modelmywatershed.org",
   "MOSAIC_TILER_PARAMS": {
     "io-10m-annual-lulc": {
       "assets": [

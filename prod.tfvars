@@ -1,8 +1,8 @@
 ##### PROJECT VARIABLES ####
 # The following variables are global to the FilmDrop infrastructure stack
-environment            = "staging"
+environment            = "prod"
 project_name           = "mmw"
-domain_zone            = "Z2N98U70LSHZAA"
+domain_zone            = "REPLACE_ME"
 s3_access_log_bucket   = ""
 s3_logs_archive_bucket = ""
 
@@ -21,21 +21,22 @@ deploy_cirrus_dashboard                  = false
 deploy_local_stac_server_artifacts       = false
 deploy_sample_data_bucket                = false
 
+
 ##### NETWORKING VARIABLES ####
 # If left blank, the infrastructure will try to query the values from the control tower vpc
-vpc_id                       = ""
-vpc_cidr                     = "10.26.0.0/18"
-security_group_id            = ""
+vpc_id            = ""
+vpc_cidr          = "10.26.0.0/18"
+security_group_id = ""
 public_subnets_az_to_id_map = {
-    "us-west-2a" = "10.26.0.0/22"
-    "us-west-2b" = "10.26.4.0/22"
-    "us-west-2c" = "10.26.8.0/22"
+  "us-west-2a" = "10.26.0.0/22"
+  "us-west-2b" = "10.26.4.0/22"
+  "us-west-2c" = "10.26.8.0/22"
 }
 
 private_subnets_az_to_id_map = {
-    "us-west-2a" = "10.26.12.0/22"
-    "us-west-2b" = "10.26.16.0/22"
-    "us-west-2c" = "10.26.20.0/22"
+  "us-west-2a" = "10.26.12.0/22"
+  "us-west-2b" = "10.26.16.0/22"
+  "us-west-2c" = "10.26.20.0/22"
 }
 
 ##### ALARM VARIABLES ####
@@ -49,12 +50,12 @@ sns_critical_subscriptions_map = {}
 
 titiler_inputs = {
   app_name                        = "titiler"
-  domain_alias                    = "tiler.staging.modelmywatershed.org"
+  domain_alias                    = "tiler.modelmywatershed.org"
   deploy_cloudfront               = true
   mosaic_titiler_release_tag      = "v0.14.0-1.0.4"
   stac_server_and_titiler_s3_arns = []
   mosaic_titiler_waf_allowed_url  = "https://api.impactobservatory.com/stac-aws/"
-  mosaic_titiler_host_header      = "tiler.staging.modelmywatershed.org"
+  mosaic_titiler_host_header      = "tiler.modelmywatershed.org"
   web_acl_id                      = ""
   auth_function = {
     cf_function_name             = ""
@@ -69,10 +70,10 @@ titiler_inputs = {
 }
 
 console_ui_inputs = {
-  app_name          = "console"
-  filmdrop_ui_release     = "v5.4.0"
-  deploy_cloudfront = true
-  domain_alias      = "console.staging.modelmywatershed.org"
+  app_name            = "console"
+  filmdrop_ui_release = "v5.4.0"
+  deploy_cloudfront   = true
+  domain_alias        = "console.prod.modelmywatershed.org"
   custom_error_response = [
     {
       error_caching_min_ttl = "10"
@@ -81,7 +82,7 @@ console_ui_inputs = {
       response_page_path    = "/"
     }
   ]
-  filmdrop_ui_config_file = "./console-ui/config.staging.json"
+  filmdrop_ui_config_file = "./console-ui/config.prod.json"
   filmdrop_ui_logo_file   = "./console-ui/logo.png"
   filmdrop_ui_logo        = "bm9uZQo=" # Base64: 'none'
   auth_function = {
