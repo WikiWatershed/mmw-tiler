@@ -16,8 +16,14 @@ and [FilmDrop UI](https://github.com/Element84/filmdrop-ui) via the
 
 ## Setup
 
-1. Create the bootstrap resources as outlined in [this readme](boostrap/README.md).
-2. Create a GitHub Environment (e.g., `staging`) with these Environment Secrets:
+1. In the AWS Accounts to be deployed into, create the bootstrap resources as
+   outlined in <bootstrap/README.md>.
+
+## Deploying
+
+### Via GitHub Actions
+
+Create a GitHub Environment (e.g., `staging`) with these Environment Secrets:
 
 | Variable              | Description                                             | Example                                                                               |
 | --------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------- |
@@ -28,11 +34,7 @@ and [FilmDrop UI](https://github.com/Element84/filmdrop-ui) via the
 | `SLACK_CHANNEL_ID`    | ID of Slack channel to post deploy status notifications | `D26F29X7OB3`                                                                         |
 | `SLACK_BOT_TOKEN`     | Slack Bot Token                                         | alphanumeric string                                                                   |
 
-## Deploying
-
-### Via GitHub Actions
-
-TBD.
+TODO: finish
 
 ### Manual Deploy
 
