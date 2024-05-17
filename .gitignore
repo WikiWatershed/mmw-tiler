@@ -25,3 +25,4 @@ plan.out
 .pytest*
 __pycache__
 .vars
+.secrets

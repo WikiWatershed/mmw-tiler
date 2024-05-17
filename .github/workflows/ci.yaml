@@ -3,7 +3,7 @@ name: Release CI
 env:
   PROJECT_NAME: mmw
   FILMDROP_TERRAFORM_RELEASE: v2.23.0 # keep this up to date!
-
+  
 on:
   push:
     branches: ["main"]
@@ -20,12 +20,6 @@ jobs:
       project-name: ${{ env.PROJECT_NAME }}
       stage: staging
       fd-aws-tf-modules-version: ${{ env.FILMDROP_TERRAFORM_RELEASE }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      aws-role: ${{ secrets.AWS_ROLE }}
-      tf-state-bucket: ${{ secrets.TF_STATE_BUCKET }}
-      tf-state-lock: ${{ secrets.TF_STATE_LOCK_TABLE }}
-      slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-      slack-channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
 
   deploy-prod:
     environment:
@@ -37,9 +31,3 @@ jobs:
       project-name: ${{ env.PROJECT_NAME }}
       stage: staging
       fd-aws-tf-modules-version: ${{ env.FILMDROP_TERRAFORM_RELEASE }}
-      aws-region: ${{ secrets.AWS_REGION }}
-      aws-role: ${{ secrets.AWS_ROLE }}
-      tf-state-bucket: ${{ secrets.TF_STATE_BUCKET }}
-      tf-state-lock: ${{ secrets.TF_STATE_LOCK_TABLE }}
-      slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
-      slack-channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
