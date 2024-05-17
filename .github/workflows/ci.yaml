@@ -4,7 +4,6 @@ env:
   PROJECT_NAME: mmw
   FILMDROP_TERRAFORM_RELEASE: v2.23.0 # keep this up to date!
   STAGE: staging
-  CI: true
 
 on:
   push:
@@ -14,14 +13,15 @@ on:
 jobs:
   deploy:
     environment: 
-      name: ${STAGE}
-      url: https://tiler.${STAGE}.modelmywatershed.org
+      name: ${{  env.STAGE }}
+      url: https://tiler.${{  env.STAGE }}.modelmywatershed.org
     permissions:
       id-token: write
       contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.7.5"
@@ -80,7 +80,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE }}
           role-session-name: GitHubReleaseApply
 
-      - run: terraform apply -lock=false -input=false ${STAGE}.tfplan
+      - name: Terraform Apply
+        id: tf_apply
+        run: terraform apply -lock=false -input=false ${STAGE}.tfplan
 
       - name: Post status to Slack channel
         id: tf_apply_successs
@@ -89,7 +91,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          slack-message: ":badger_dance: ${PROJECT_NAME}-${STAGE}-titiler ${{  github.ref_name }} terraform apply job has succeeded!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+          slack-message: ":badger_dance: ${{  env.PROJECT_NAME }}-${{  env.STAGE }}-titiler ${{  github.ref_name }} terraform apply job has succeeded!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -100,6 +102,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          slack-message: ":sadpanda: ${PROJECT_NAME}-${STAGE}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+          slack-message: ":sadpanda: ${{  env.PROJECT_NAME }}-${{  env.STAGE }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
