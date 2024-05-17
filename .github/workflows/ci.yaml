@@ -11,5 +11,5 @@ jobs:
     secrets: inherit
     with:
       project-name: mmw
-      stage: ${{ env.STAGE }}
+      stage: ${{ vars.STAGE }}
       fd-aws-tf-modules-version: v2.23.0
