@@ -1,8 +1,5 @@
 name: Pre-commit CI
 
-env:
-  CI: true
-
 on:
   push
 
