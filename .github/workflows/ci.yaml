@@ -6,7 +6,7 @@ on:
     tags: ["v*.*.*"]
 
 jobs:
-  deploy-staging:
+  deploy:
     uses: ./.github/workflows/deploy-reusable.yaml
     secrets: inherit
     with:
