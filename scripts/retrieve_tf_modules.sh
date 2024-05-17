@@ -2,6 +2,8 @@
 set -Eeuo pipefail
 # set -x # print each command before executing
 
+FILMDROP_TERRAFORM_RELEASE=$1
+
 wget -qO- https://github.com/Element84/filmdrop-aws-tf-modules/archive/refs/tags/${FILMDROP_TERRAFORM_RELEASE}.tar.gz | tar xvz
 mkdir -p modules
 mkdir -p profiles

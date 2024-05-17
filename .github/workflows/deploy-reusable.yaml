@@ -1,0 +1,125 @@
+name: Deploy Workflow
+
+on:
+  workflow_call:
+    inputs:
+      project-name:
+        required: true
+        type: string
+      stage:
+        required: true
+        type: string
+      fd-aws-tf-modules-version:
+        required: true
+        type: string
+      aws-region:
+        required: true
+        type: string
+      aws-role:
+        required: true
+        type: string
+      tf-state-bucket:
+        required: true
+        type: string
+      tf-state-lock:
+        required: true
+        type: string
+      slack-bot-token:
+        required: true
+        type: string
+      slack-channel-id:
+        required: true
+        type: string
+
+jobs:
+  reusable_deploy:
+    permissions:
+      id-token: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Preparing Environment
+        id: prep_env
+        run: |
+          echo "Creating terraform backend file ..."
+          echo '' > config.s3.backend.tf
+          echo 'terraform {' >> config.s3.backend.tf
+          echo '  backend "s3" {' >> config.s3.backend.tf
+          echo '    encrypt = true' >> config.s3.backend.tf
+          echo "    bucket = \"${{ inputs.tf-state-bucket }}\"" >> config.s3.backend.tf
+          echo "    dynamodb_table = \"${{ inputs.tf-state-lock-table }}\"" >> config.s3.backend.tf
+          echo "    key = \"${{ inputs.project-name }}-${{ inputs.stage }}.tfstate\"" >> config.s3.backend.tf
+          echo "    region = \"${{ inputs.aws-region }}\"" >> config.s3.backend.tf
+          echo '  }' >> config.s3.backend.tf
+          echo '}' >> config.s3.backend.tf
+          cat config.s3.backend.tf
+          echo "Using FilmDrop Terraform ${{ inputs.fd-aws-tf-modules-version }} release..."
+          ./scripts/retrieve_tf_modules.sh ${{ inputs.fd-aws-tf-modules-version }}
+
+      - name: Configure Terraform Init Credentials
+        id: init_creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.aws-role }}
+          role-session-name: GitHubReleaseInit
+
+      - name: Terraform Init
+        id: tf_init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: tf_validate
+        run: terraform validate
+
+      - name: Configure Terraform Plan Credentials
+        id: plan_creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.aws-role }}
+          role-session-name: GitHubReleasePlan
+
+      - name: Terraform Plan
+        id: tf_plan
+        run: terraform plan -var-file="${{ inputs.STAGE }}.tfvars" -out ${{ inputs.STAGE }}.tfplan -lock=false
+
+      - name: Configure Terraform Apply Credentials
+        id: apply_creds
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.aws-role }}
+          role-session-name: GitHubReleaseApply
+
+      - name: Terraform Apply
+        id: tf_apply
+        run: terraform apply -lock=false -input=false ${{ inputs.STAGE }}.tfplan
+
+      - name: Post status to Slack channel
+        id: tf_apply_successs
+        if: steps.tf_apply.outcome == 'success'
+        continue-on-error: true
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ inputs.slack-channel-id }}
+          slack-message: ":badger_dance: ${{ inputs.PROJECT_NAME }}-${{ inputs.STAGE }}-titiler ${{ github.ref_name }} terraform apply job has succeeded!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ inputs.slack-bot-token }}
+
+      - name: Post status to Slack channel
+        id: tf_apply_failure
+        if: steps.tf_apply.outcome != 'success'
+        continue-on-error: true
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: ${{ inputs.slack-channel-id }}
+          slack-message: ":sadpanda: ${{  inputs.project-name }}-${{ inputs.stage }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+        env:
+          SLACK_BOT_TOKEN: ${{ inputs.slack-bot-token }}
