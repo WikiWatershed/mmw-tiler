@@ -13,20 +13,6 @@ jobs:
   deploy-staging:
     uses: ./.github/workflows/deploy-reusable.yaml
     secrets: inherit
-    environment:
-      name: staging
-      url: https://tiler.staging.modelmywatershed.org
-    with:
-      project-name: ${{ env.PROJECT_NAME }}
-      stage: staging
-      fd-aws-tf-modules-version: ${{ env.FILMDROP_TERRAFORM_RELEASE }}
-
-  deploy-prod:
-    uses: ./.github/workflows/deploy-reusable.yaml
-    secrets: inherit
-    environment:
-      name: prod
-      url: https://tiler.modelmywatershed.org
     with:
       project-name: ${{ env.PROJECT_NAME }}
       stage: staging
