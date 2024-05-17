@@ -13,8 +13,8 @@ on:
 jobs:
   deploy:
     environment: 
-      name: ${{  env.STAGE }}
-      url: https://tiler.${{  env.STAGE }}.modelmywatershed.org
+      name: staging
+      url: https://tiler.staging.modelmywatershed.org
     permissions:
       id-token: write
       contents: read
