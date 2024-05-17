@@ -11,5 +11,4 @@ jobs:
     secrets: inherit
     with:
       project-name: mmw
-      stage: staging
       fd-aws-tf-modules-version: v2.23.0
