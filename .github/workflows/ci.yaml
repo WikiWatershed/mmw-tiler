@@ -14,6 +14,8 @@ jobs:
     environment:
       name: staging
       url: https://console.staging.modelmywatershed.org
+    env:
+      stage: staging
     permissions:
       id-token: write
       contents: read
@@ -35,7 +37,7 @@ jobs:
           echo '    encrypt = true' >> config.s3.backend.tf
           echo "    bucket = \"${{ secrets.TF_STATE_BUCKET }}\"" >> config.s3.backend.tf
           echo "    dynamodb_table = \"${{ secrets.TF_STATE_LOCK_TABLE }}\"" >> config.s3.backend.tf
-          echo "    key = \"${{ env.project-name }}-${{ var.STAGE }}.tfstate\"" >> config.s3.backend.tf
+          echo "    key = \"${{ env.project-name }}-${{ env.stage }}.tfstate\"" >> config.s3.backend.tf
           echo "    region = \"${{ secrets.AWS_REGION }}\"" >> config.s3.backend.tf
           echo '  }' >> config.s3.backend.tf
           echo '}' >> config.s3.backend.tf
@@ -69,7 +71,7 @@ jobs:
 
       - name: Terraform Plan
         id: tf_plan
-        run: terraform plan -var-file="${{ var.STAGE }}.tfvars" -out ${{ var.STAGE }}.tfplan -lock=false
+        run: terraform plan -var-file="${{ env.stage }}.tfvars" -out ${{ env.stage }}.tfplan -lock=false
 
       - name: Configure Terraform Apply Credentials
         id: apply_creds
@@ -81,7 +83,7 @@ jobs:
 
       - name: Terraform Apply
         id: tf_apply
-        run: terraform apply -lock=false -input=false ${{ var.STAGE }}.tfplan
+        run: terraform apply -lock=false -input=false ${{ env.stage }}.tfplan
 
       - name: Post status to Slack channel
         id: tf_apply_successs
@@ -90,7 +92,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          slack-message: ":badger_dance: ${{ env.project-name }}-${{ var.STAGE }}-titiler ${{  github.ref_name }} terraform apply job has succeeded!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+          slack-message: ":badger_dance: ${{ env.project-name }}-${{ env.stage }}-titiler ${{  github.ref_name }} terraform apply job has succeeded!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -101,7 +103,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          slack-message: ":sadpanda: ${{ env.project-name }}-${{ var.STAGE }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+          slack-message: ":sadpanda: ${{ env.project-name }}-${{ env.stage }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }} 
 
@@ -109,6 +111,8 @@ jobs:
     environment:
       name: prod
       url: https://console.modelmywatershed.org
+    env:
+      stage: prod
     permissions:
       id-token: write
       contents: read
@@ -130,7 +134,7 @@ jobs:
           echo '    encrypt = true' >> config.s3.backend.tf
           echo "    bucket = \"${{ secrets.TF_STATE_BUCKET }}\"" >> config.s3.backend.tf
           echo "    dynamodb_table = \"${{ secrets.TF_STATE_LOCK_TABLE }}\"" >> config.s3.backend.tf
-          echo "    key = \"${{ env.project-name }}-${{ var.STAGE }}.tfstate\"" >> config.s3.backend.tf
+          echo "    key = \"${{ env.project-name }}-${{ env.stage }}.tfstate\"" >> config.s3.backend.tf
           echo "    region = \"${{ secrets.AWS_REGION }}\"" >> config.s3.backend.tf
           echo '  }' >> config.s3.backend.tf
           echo '}' >> config.s3.backend.tf
@@ -164,7 +168,7 @@ jobs:
 
       - name: Terraform Plan
         id: tf_plan
-        run: terraform plan -var-file="${{ var.STAGE }}.tfvars" -out ${{ var.STAGE }}.tfplan -lock=false
+        run: terraform plan -var-file="${{ env.stage }}.tfvars" -out ${{ env.stage }}.tfplan -lock=false
 
       - name: Configure Terraform Apply Credentials
         id: apply_creds
@@ -176,7 +180,7 @@ jobs:
 
       - name: Terraform Apply
         id: tf_apply
-        run: terraform apply -lock=false -input=false ${{ var.STAGE }}.tfplan
+        run: terraform apply -lock=false -input=false ${{ env.stage }}.tfplan
 
       - name: Post status to Slack channel
         id: tf_apply_successs
@@ -185,7 +189,7 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          slack-message: ":badger_dance: ${{ env.project-name }}-${{ var.STAGE }}-titiler ${{  github.ref_name }} terraform apply job has succeeded!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+          slack-message: ":badger_dance: ${{ env.project-name }}-${{ env.stage }}-titiler ${{  github.ref_name }} terraform apply job has succeeded!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
@@ -196,6 +200,6 @@ jobs:
         uses: slackapi/slack-github-action@v1.26.0
         with:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
-          slack-message: ":sadpanda: ${{ env.project-name }}-${{ var.STAGE }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+          slack-message: ":sadpanda: ${{ env.project-name }}-${{ env.stage }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }} 
