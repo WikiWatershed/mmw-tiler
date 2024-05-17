@@ -1,6 +1,7 @@
 <!-- omit from toc -->
 # Model My Watershed Tiler Deployment
 
+- [Development](#development)
 - [Setup](#setup)
 - [Deploying](#deploying)
   - [Via GitHub Actions](#via-github-actions)
@@ -13,6 +14,14 @@ This repository deploys [TiTiler](https://github.com/developmentseed/titiler)
 (as the fork [titiler-mosaicjson](https://github.com/Element84/titiler-mosaicjson))
 and [FilmDrop UI](https://github.com/Element84/filmdrop-ui) via the
 [FilmDrop Infrastructure Terraform Modules](https://github.com/Element84/filmdrop-aws-tf-modules).
+
+## Development
+
+Install pre-commit hooks:
+
+```bash
+pre-commit run --all-files
+```
 
 ## Setup
 

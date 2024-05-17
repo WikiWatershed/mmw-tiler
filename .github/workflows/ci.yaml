@@ -21,6 +21,7 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.7.5"
@@ -41,9 +42,7 @@ jobs:
           echo '}' >> config.s3.backend.tf
           cat config.s3.backend.tf
           echo "Using FilmDrop Terraform ${FILMDROP_TERRAFORM_RELEASE} release..."
-          wget -q -O filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}.tgz https://github.com/Element84/filmdrop-aws-tf-modules/archive/refs/tags/${FILMDROP_TERRAFORM_RELEASE}.tar.gz
-          tar -xzf filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}.tgz
-          mv filmdrop-aws-tf-modules-${FILMDROP_TERRAFORM_RELEASE:1}/* .
+          ./scripts/retrieve_tf_modules.sh
 
       - name: Configure Terraform Init Credentials
         id: init_creds
@@ -104,21 +103,3 @@ jobs:
           slack-message: ":sadpanda: ${PROJECT_NAME}-${STAGE}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.7.5"
-      - uses: terraform-linters/setup-tflint@v4
-        with:
-          tflint_version: "v0.51.1"
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install pre-commit
-        run: pip install pre-commit
-      - name: Run pre-commit
-        run: pre-commit run --all-files
