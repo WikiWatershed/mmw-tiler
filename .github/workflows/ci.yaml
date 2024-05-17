@@ -1,9 +1,5 @@
 name: Release CI
 
-env:
-  PROJECT_NAME: mmw
-  FILMDROP_TERRAFORM_RELEASE: v2.23.0 # keep this up to date!
-  
 on:
   push:
     branches: ["main"]
@@ -14,6 +10,6 @@ jobs:
     uses: ./.github/workflows/deploy-reusable.yaml
     secrets: inherit
     with:
-      project-name: ${{ env.PROJECT_NAME }}
+      project-name: mmw
       stage: staging
-      fd-aws-tf-modules-version: ${{ env.FILMDROP_TERRAFORM_RELEASE }}
+      fd-aws-tf-modules-version: v2.23.0
