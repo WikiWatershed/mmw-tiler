@@ -6,10 +6,18 @@ env:
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "pv/reusable"]
     tags: ["v*.*.*"]
 
 jobs:
+  deploy-staging-2:
+    with:
+      stage: staging
+      project-name: ${{ env.project-name }}
+      fd-aws-tf-modules-version: ${{ env.fd-aws-tf-modules-version }}
+    uses: .github/workflows/reusable.yml
+    secrets: inherit
+
   deploy-staging:
     environment:
       name: staging
@@ -22,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.7.5"
@@ -105,7 +113,7 @@ jobs:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           slack-message: ":sadpanda: ${{ env.project-name }}-${{ env.stage }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }} 
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
 
   deploy-prod:
     environment:
@@ -119,7 +127,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.7.5"
@@ -202,4 +210,4 @@ jobs:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           slack-message: ":sadpanda: ${{ env.project-name }}-${{ env.stage }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }} 
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
