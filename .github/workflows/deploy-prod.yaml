@@ -2,7 +2,7 @@ name: 🚀 Deploy Production
 
 on:
   push:
-    tags:        
+    tags:
       - v.*
 
 jobs:
@@ -13,4 +13,4 @@ jobs:
     with:
       stage: prod
       url: https://console.modelmywatershed.org
-      fd-aws-tf-modules-version: v2.23.0
+      fd-aws-tf-modules-version: v2.24.0

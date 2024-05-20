@@ -3,7 +3,7 @@ name: Pre-commit CI
 on: push
 
 env:
-  fd-aws-tf-modules-version: v2.23.0
+  fd-aws-tf-modules-version: v2.24.0
 
 jobs:
   validate:
@@ -19,10 +19,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      # TODO: re-enable this when upgrading to >= 2.23.0 w/ fix for tflint    
-      # - name: Preparing Environment
-      #   id: prep_env
-      #   run: ./scripts/retrieve_tf_modules.sh ${{ env.fd-aws-tf-modules-version }}
+      - name: Preparing Environment
+        id: prep_env
+        run: ./scripts/retrieve_tf_modules.sh ${{ env.fd-aws-tf-modules-version }}
       - name: Install pre-commit
         run: pip install pre-commit
       - name: Run pre-commit hooks

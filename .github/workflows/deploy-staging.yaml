@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-    tags:        
+      - pv/reusable
+    tags:
       - v.*
 
 jobs:
@@ -15,4 +16,4 @@ jobs:
     with:
       stage: staging
       url: https://console.staging.modelmywatershed.org
-      fd-aws-tf-modules-version: v2.23.0
+      fd-aws-tf-modules-version: v2.24.0

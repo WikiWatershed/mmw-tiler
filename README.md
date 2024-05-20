@@ -87,7 +87,7 @@ The `bucket` name will be the value to be set for `TF_STATE_BUCKET`, e.g.,
 Download the filmdrop-aws-tf-modules source:
 
 ```shell
-./scripts/retrieve_tf_modules.sh v2.23.0
+./scripts/retrieve_tf_modules.sh v2.24.0
 ```
 
 Re-run this anytime you with to uptake a new `filmdrop-aws-tf-modules` release,
