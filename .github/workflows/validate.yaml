@@ -4,7 +4,7 @@ on:
   push
 
 jobs:
-  pre-commit:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,5 +19,5 @@ jobs:
           python-version: "3.11"
       - name: Install pre-commit
         run: pip install pre-commit
-      - name: Run pre-commit
+      - name: Run pre-commit hooks
         run: pre-commit run --all-files
