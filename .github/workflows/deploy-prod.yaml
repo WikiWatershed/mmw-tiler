@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-prod:
-    uses: ./.github/workflows/reusable-deploy.yaml
+    uses: ./.github/workflows/deploy-wf.yaml
     secrets: inherit
     concurrency: prod
     with:

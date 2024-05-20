@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy-staging:
-    uses: ./.github/workflows/reusable-deploy.yaml
+    uses: ./.github/workflows/deploy-wf.yaml
     secrets: inherit
     concurrency: staging
     with:
