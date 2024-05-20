@@ -2,7 +2,7 @@
 # Model My Watershed Tiler Deployment
 
 - [Development](#development)
-- [Setup](#setup)
+- [Pre-deploy setup](#pre-deploy-setup)
 - [Deploying](#deploying)
   - [Via GitHub Actions](#via-github-actions)
   - [Manual Deploy](#manual-deploy)
@@ -20,10 +20,28 @@ and [FilmDrop UI](https://github.com/Element84/filmdrop-ui) via the
 Install pre-commit hooks:
 
 ```bash
+pre-commit install
+```
+
+And run them with:
+
+```bash
 pre-commit run --all-files
 ```
 
-## Setup
+Due to an issue with VSCode, the wrong JSON Schema is selected for the file
+`.github/workflows/deploy.yaml`. To prevent this, add the following to your
+`.vscode/settings.json`:
+
+```json
+{
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": [".github/workflows/*.{yml,yaml}"]
+    }
+}
+```
+
+## Pre-deploy setup
 
 1. In the AWS Accounts to be deployed into, create the bootstrap resources as
    outlined in <bootstrap/README.md>.
