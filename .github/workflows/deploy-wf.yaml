@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 jobs:
-  validate:
+  deploy:
     environment:
       name: ${{ inputs.stage }}
       url: ${{ inputs.url }}
@@ -78,13 +78,6 @@ jobs:
         id: tf_plan
         run: terraform plan -var-file="${{ inputs.stage }}.tfvars" -out ${{ inputs.stage }}.tfplan -lock=false
 
-  deploy:
-    needs: ["validate"]
-    environment:
-      name: ${{ inputs.stage }}
-      url: ${{ inputs.url }}
-    runs-on: ubuntu-latest
-    steps:
       - name: Configure Terraform Apply Credentials
         id: apply_creds
         uses: aws-actions/configure-aws-credentials@v4
