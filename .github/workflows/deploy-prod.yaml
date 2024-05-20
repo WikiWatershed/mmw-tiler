@@ -2,6 +2,8 @@ name: 🚀 Deploy Prod
 
 on:
   push:
+    tags:        
+      - v.*
 
 jobs:
   deploy-prod:
