@@ -11,20 +11,23 @@ on:
         required: true
         type: string
 
+env:
+  project-name: mmw
+
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
-  reusable-deploy:
+  reusable-validate:
     environment:
       name: ${{ inputs.stage }}
       url: ${{ inputs.url }}
-    env:
-      project-name: mmw
-    permissions:
-      id-token: write
-      contents: read
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.7.5"
@@ -75,6 +78,13 @@ jobs:
         id: tf_plan
         run: terraform plan -var-file="${{ inputs.stage }}.tfvars" -out ${{ inputs.stage }}.tfplan -lock=false
 
+  reusable-deploy:
+    needs: ["reusable-validate"]
+    environment:
+      name: ${{ inputs.stage }}
+      url: ${{ inputs.url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Configure Terraform Apply Credentials
         id: apply_creds
         uses: aws-actions/configure-aws-credentials@v4
@@ -107,4 +117,4 @@ jobs:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           slack-message: ":sadpanda: ${{ env.project-name }}-${{ inputs.stage }}-titiler ${{  github.ref_name }} terraform apply has failed!\n:alert: make sure cleanup job deletes all AWS resources!\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }} 
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

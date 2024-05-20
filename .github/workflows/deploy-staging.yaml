@@ -1,0 +1,14 @@
+name: 🚀 Deploy Staging
+
+on:
+  push:
+
+jobs:
+  deploy-staging:
+    uses: ./.github/workflows/reusable-deploy.yaml
+    secrets: inherit
+    concurrency: staging
+    with:
+      stage: staging
+      url: https://console.staging.modelmywatershed.org
+      fd-aws-tf-modules-version: v2.23.0
