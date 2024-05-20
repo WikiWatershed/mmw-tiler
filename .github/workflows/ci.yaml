@@ -15,7 +15,7 @@ jobs:
       stage: staging
       project-name: ${{ env.project-name }}
       fd-aws-tf-modules-version: ${{ env.fd-aws-tf-modules-version }}
-    uses: .github/workflows/reusable.yml@9ded034a18947b93e878a4be1b7388267a70d4d4
+    uses: ./.github/workflows/reusable.yml
     secrets: inherit
 
   deploy-staging:
