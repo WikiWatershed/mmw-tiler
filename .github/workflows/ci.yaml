@@ -13,8 +13,8 @@ jobs:
   deploy-staging-2:
     with:
       stage: staging
-      project-name: ${{ env.project-name }}
-      fd-aws-tf-modules-version: ${{ env.fd-aws-tf-modules-version }}
+      project-name: mmw
+      fd-aws-tf-modules-version: v2.23.0
     uses: ./.github/workflows/reusable.yml
     secrets: inherit
 
