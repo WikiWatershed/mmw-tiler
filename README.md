@@ -61,7 +61,15 @@ Create a GitHub Environment (e.g., `staging`) with these Environment Secrets:
 | `SLACK_CHANNEL_ID`    | ID of Slack channel to post deploy status notifications | `D26F29X7OB3`                                                                         |
 | `SLACK_BOT_TOKEN`     | Slack Bot Token                                         | alphanumeric string                                                                   |
 
-TODO: finish
+The following GitHub Actions will run under the following situations:
+
+- The validation workflow will run upon any push to any branch. This runs
+  some tests on the validity of the Terraform configuration.
+- The staging workflow will run upon push to `main` or any tag starting with `v`.
+- The prod workflow will run upon push to any tag starting with `v`.
+
+The staging and prod workflows require manual approval to access their respective
+GitHub Environments.
 
 ### Manual Deploy
 
@@ -110,7 +118,7 @@ file and run `terraform init` again without it.
 
 ### Via GitHub Actions
 
-TODO
+Not currently supported.
 
 ### Manual Deploy
 
