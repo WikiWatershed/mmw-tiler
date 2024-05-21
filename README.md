@@ -2,7 +2,7 @@
 # Model My Watershed Tiler Deployment
 
 - [Development](#development)
-- [Setup](#setup)
+- [Pre-deploy setup](#pre-deploy-setup)
 - [Deploying](#deploying)
   - [Via GitHub Actions](#via-github-actions)
   - [Manual Deploy](#manual-deploy)
@@ -20,10 +20,28 @@ and [FilmDrop UI](https://github.com/Element84/filmdrop-ui) via the
 Install pre-commit hooks:
 
 ```bash
+pre-commit install
+```
+
+And run them with:
+
+```bash
 pre-commit run --all-files
 ```
 
-## Setup
+Due to an issue with VSCode, the wrong JSON Schema is selected for the file
+`.github/workflows/deploy.yaml`. To prevent this, add the following to your
+`.vscode/settings.json`:
+
+```json
+{
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-workflow.json": [".github/workflows/*.{yml,yaml}"]
+    }
+}
+```
+
+## Pre-deploy setup
 
 1. In the AWS Accounts to be deployed into, create the bootstrap resources as
    outlined in <bootstrap/README.md>.
@@ -43,7 +61,15 @@ Create a GitHub Environment (e.g., `staging`) with these Environment Secrets:
 | `SLACK_CHANNEL_ID`    | ID of Slack channel to post deploy status notifications | `D26F29X7OB3`                                                                         |
 | `SLACK_BOT_TOKEN`     | Slack Bot Token                                         | alphanumeric string                                                                   |
 
-TODO: finish
+The following GitHub Actions will run under the following situations:
+
+- The validation workflow will run upon any push to any branch. This runs
+  some tests on the validity of the Terraform configuration.
+- The staging workflow will run upon push to `main` or any tag starting with `v`.
+- The prod workflow will run upon push to any tag starting with `v`.
+
+The staging and prod workflows require manual approval to access their respective
+GitHub Environments.
 
 ### Manual Deploy
 
@@ -69,7 +95,7 @@ The `bucket` name will be the value to be set for `TF_STATE_BUCKET`, e.g.,
 Download the filmdrop-aws-tf-modules source:
 
 ```shell
-./scripts/retrieve_tf_modules.sh v2.23.0
+./scripts/retrieve_tf_modules.sh v2.24.0
 ```
 
 Re-run this anytime you with to uptake a new `filmdrop-aws-tf-modules` release,
@@ -92,7 +118,7 @@ file and run `terraform init` again without it.
 
 ### Via GitHub Actions
 
-TODO
+Not currently supported.
 
 ### Manual Deploy
 

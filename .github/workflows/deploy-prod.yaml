@@ -1,0 +1,16 @@
+name: 🚀 Deploy Production
+
+on:
+  push:
+    tags:
+      - v.*
+
+jobs:
+  deploy-prod:
+    uses: ./.github/workflows/deploy-wf.yaml
+    secrets: inherit
+    concurrency: prod
+    with:
+      stage: prod
+      url: https://console.modelmywatershed.org
+      fd-aws-tf-modules-version: v2.24.0
