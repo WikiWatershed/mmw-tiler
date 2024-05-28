@@ -71,7 +71,7 @@ titiler_inputs = {
 
 console_ui_inputs = {
   app_name            = "console"
-  filmdrop_ui_release = "v5.4.0"
+  filmdrop_ui_release = "v5.5.0"
   deploy_cloudfront   = true
   domain_alias        = "console.prod.modelmywatershed.org"
   custom_error_response = [
