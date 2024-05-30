@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
-# set -x # print each command before executing
+set -x # print each command before executing
 
 FILMDROP_TERRAFORM_RELEASE=$1
 
