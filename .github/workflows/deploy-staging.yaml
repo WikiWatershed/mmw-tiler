@@ -15,4 +15,4 @@ jobs:
     with:
       stage: staging
       url: https://console.staging.modelmywatershed.org
-      fd-aws-tf-modules-version: v2.26.0
+      fd-aws-tf-modules-version: v2.27.0
