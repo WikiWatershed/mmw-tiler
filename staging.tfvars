@@ -57,7 +57,6 @@ titiler_inputs = {
   mosaic_titiler_waf_allowed_url = "https://api.impactobservatory.com/stac-aws/"
   mosaic_titiler_host_header     = "tiler.staging.modelmywatershed.org"
   mosaic_tile_timeout            = 900
-  titiler_timeout                = 900
   web_acl_id                     = ""
   auth_function = {
     cf_function_name             = ""
