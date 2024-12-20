@@ -2,7 +2,7 @@
 # The following variables are global to the FilmDrop infrastructure stack
 environment            = "prod"
 project_name           = "mmw"
-domain_zone            = "REPLACE_ME"
+domain_zone            = "Z2IL9F9SQ608FV"
 s3_access_log_bucket   = ""
 s3_logs_archive_bucket = ""
 

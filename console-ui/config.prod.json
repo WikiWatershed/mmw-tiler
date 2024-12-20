@@ -1,5 +1,5 @@
 {
-  "APP_NAME": "FilmDrop Console",
+  "APP_NAME": "Model My Watershed FilmDrop Console",
   "PUBLIC_URL": "https://console.modelmywatershed.org",
   "LOGO_URL": "./logo.png",
   "LOGO_ALT": "FilmDrop Console Logo",
@@ -20,7 +20,21 @@
     "io-10m-annual-lulc": {
       "assets": [
         "supercell"
-      ]
+      ],
+      "colormap": {
+        "0": "#000000",
+        "1": "#419bdf",
+        "2": "#397d49",
+        "3": "#000000",
+        "4": "#7a87c6",
+        "5": "#e49635",
+        "6": "#000000",
+        "7": "#c4281b",
+        "8": "#a59b8f",
+        "9": "#a8ebff",
+        "10": "#616161",
+        "11": "#e3e2c3"
+      }
     }
   },
   "MOSAIC_TILER_URL": "https://tiler.modelmywatershed.org",
@@ -28,7 +42,21 @@
     "io-10m-annual-lulc": {
       "assets": [
         "supercell"
-      ]
+      ],
+      "colormap": {
+        "0": "#000000",
+        "1": "#419bdf",
+        "2": "#397d49",
+        "3": "#000000",
+        "4": "#7a87c6",
+        "5": "#e49635",
+        "6": "#000000",
+        "7": "#c4281b",
+        "8": "#a59b8f",
+        "9": "#a8ebff",
+        "10": "#616161",
+        "11": "#e3e2c3"
+      }
     }
   },
   "SHOW_BRAND_LOGO": true,
