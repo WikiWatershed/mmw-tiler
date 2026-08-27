@@ -51,5 +51,16 @@ new = (
 assert old in text, "mosaic-titiler wget block not found; upstream module layout changed"
 tf.write_text(text.replace(old, new))
 
-print("MMW patch applied: mosaic-titiler runtime=python3.12, source=S3")
+# 3) The CloudFront headers helper Lambda is hardcoded to python3.9 (deprecated
+#    2025-12-15) in headers.tf, with no variable to override it and no change in
+#    newer FilmDrop releases. Bump it to a supported runtime; the handler only
+#    uses os + boto3 (bundled in every runtime), so it is runtime-agnostic.
+#    python3.13 (not 3.14): the pinned AWS provider's `terraform validate` runtime
+#    enum tops out at 3.13, though both deprecate on 2029-06-30.
+headers = pathlib.Path("modules/cloudfront/custom_origin/headers.tf")
+htext = headers.read_text()
+assert '"python3.9"' in htext, "headers.tf python3.9 runtime not found; upstream module layout changed"
+headers.write_text(htext.replace('"python3.9"', '"python3.13"'))
+
+print("MMW patch applied: mosaic-titiler runtime=python3.12 (S3 source); headers lambda runtime=python3.13")
 PYEOF
